@@ -1,0 +1,2 @@
+# InsanKaynaklari
+Dönem projesi
