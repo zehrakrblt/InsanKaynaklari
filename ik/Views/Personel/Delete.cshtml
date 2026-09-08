@@ -1,0 +1,67 @@
+@model ik.Models.Personel
+@{
+    ViewData["Title"] = "Personeli Sil";
+}
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card border-danger shadow-sm">
+
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle"></i> Silme onayı
+            </div>
+
+            <div class="card-body">
+
+                <p>Bu personeli silmek üzeresiniz:</p>
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">Ad Soyad</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.Ad @Model.Soyad</dd>
+
+                    <dt class="col-sm-4">Departman</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-secondary">@Model.DepartmanAd</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Pozisyon</dt>
+                    <dd class="col-sm-8">@Model.Pozisyon</dd>
+
+                    <dt class="col-sm-4">TC Kimlik No</dt>
+                    <dd class="col-sm-8">@Model.Tc</dd>
+
+                    <dt class="col-sm-4">E-posta</dt>
+                    <dd class="col-sm-8">@Model.Eposta</dd>
+
+                    <dt class="col-sm-4">İşe giriş tarihi</dt>
+                    <dd class="col-sm-8">@Model.IseGirisTarihi.ToString("dd.MM.yyyy")</dd>
+
+                    <dt class="col-sm-4">Oluşturulma</dt>
+                    <dd class="col-sm-8">@Model.CreatedDate.ToString("dd.MM.yyyy")</dd>
+                </dl>
+
+                <div class="alert alert-info small">
+                    <i class="bi bi-info-circle"></i>
+                    Kayıt veritabanından tamamen silinmez, pasif duruma alınır.
+                    Bu sayede yanlışlıkla yapılan silmeler geri alınabilir.
+                </div>
+
+                <form asp-action="Delete" method="post">
+
+                    @* name="id" ŞART!
+                       Controller'daki DeleteConfirmed(long id) parametresi
+                       "id" adını bekliyor. asp-for tek başına "PersonelId"
+                       adında bir alan üretirdi ve eşleşmezdi. *@
+                    <input type="hidden" asp-for="PersonelId" name="id" />
+
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Evet, sil
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+@model ik.Models.Izin
+@{
+    ViewData["Title"] = "Yeni İzin Talebi";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="PersonelId" class="form-label"></label>
+                        <select asp-for="PersonelId" asp-items="ViewBag.Personeller"
+                                class="form-select">
+                            <option value="">-- Personel seçin --</option>
+                        </select>
+                        <span asp-validation-for="PersonelId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="IzinTipi" class="form-label"></label>
+                        <select asp-for="IzinTipi" class="form-select">
+                            <option value="Yıllık">Yıllık</option>
+                            <option value="Mazeret">Mazeret</option>
+                            <option value="Hastalık">Hastalık</option>
+                            <option value="Ücretsiz">Ücretsiz</option>
+                        </select>
+                        <span asp-validation-for="IzinTipi" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="BaslangicTarihi" class="form-label"></label>
+                            <input asp-for="BaslangicTarihi" type="date" class="form-control" />
+                            <span asp-validation-for="BaslangicTarihi" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="BitisTarihi" class="form-label"></label>
+                            <input asp-for="BitisTarihi" type="date" class="form-control" />
+                            <span asp-validation-for="BitisTarihi" class="text-danger small"></span>
+                            <div class="form-text">Gün sayısı otomatik hesaplanır.</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Aciklama" class="form-label"></label>
+                        <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Aciklama" class="text-danger small"></span>
+                        <div class="form-text">İsteğe bağlı.</div>
+                    </div>
+
+                    <div class="alert alert-info small">
+                        <i class="bi bi-info-circle"></i>
+                        Yeni izin talepleri <strong>Beklemede</strong> durumunda oluşturulur.
+                        Onay/red işlemi izin listesinden yapılır.
+                    </div>
+
+                    <hr />
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-lg"></i> İzin talebini kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,114 @@
+@model List<ik.Models.Izin>
+@{
+    ViewData["Title"] = "İzinler";
+}
+
+@if (TempData["Basarili"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Basarili"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Uyari"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle"></i> @TempData["Uyari"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">İzinler (@Model.Count)</span>
+        <a asp-action="Create" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-lg"></i> Yeni izin
+        </a>
+    </div>
+
+    <div class="card-body p-0">
+        @if (Model.Count == 0)
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+                <p class="mb-3">Henüz izin kaydı yok.</p>
+                <a asp-action="Create" class="btn btn-sm btn-success">İlk Izni Ekle</a>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Personel</th>
+                        <th>Departman</th>
+                        <th>İzin Türü</th>
+                        <th>Tarih Aralığı</th>
+                        <th class="text-center">Gün</th>
+                        <th class="text-center">Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var i in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@i.PersonelAdi</td>
+
+                            <td>
+                                <span class="badge bg-secondary">@i.DepartmanAd</span>
+                            </td>
+
+                            <td>@i.IzinTipi</td>
+
+                            <td class="small">
+                                @i.BaslangicTarihi.ToString("dd.MM.yyyy") — @i.BitisTarihi.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark">@i.GunSayisi</span>
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge bg-@i.DurumRenk">@i.Durum</span>
+                            </td>
+
+                            <td class="text-end text-nowrap">
+
+                                @* ⭐ Listeden tek tıkla onayla/reddet — sadece Beklemede iken göster *@
+                                @if (i.Durum == "Beklemede")
+                                {
+                                    <form asp-action="Onayla" asp-route-id="@i.IzinId" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Onayla">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-action="Reddet" asp-route-id="@i.IzinId" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Reddet">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </form>
+                                }
+
+                                  <a asp-action="Details" asp-route-id="@i.IzinId"
+                                   class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+
+                                <a asp-action="Edit" asp-route-id="@i.IzinId"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@i.IzinId"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

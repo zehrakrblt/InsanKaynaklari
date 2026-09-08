@@ -1,0 +1,60 @@
+@model ik.Models.Izin
+@{
+    ViewData["Title"] = "Izni Sil";
+}
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card border-danger shadow-sm">
+
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle"></i> Silme onayı
+            </div>
+
+            <div class="card-body">
+
+                <p>Bu Izni Silmek Üzeresiniz:</p>
+
+                <dt class="col-sm-4">Ad Soyad</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.PersonelAdi</dd>
+
+                <dt class="col-sm-4">Departman</dt>
+                <dd class="col-sm-8">
+                    <span class="badge bg-secondary">@Model.DepartmanAd</span>
+                </dd>
+
+                <dt class="col-sm-4">Tarih Aralığı</dt>
+                <dd class="col-sm-8">
+                    @Model.BaslangicTarihi.ToString("dd.MM.yyyy") -
+                    @Model.BitisTarihi.ToString("dd.MM.yyyy")
+                </dd>
+
+
+                <dt class="col-sm-4">Izin Tipi</dt>
+                <dd class="col-sm-8">@Model.IzinTipi</dd>
+
+                <div class="alert alert-info small">
+                    <i class="bi bi-info-circle"></i>
+                    Kayıt veritabanından tamamen silinmez, pasif duruma alınır.
+                    Bu sayede yanlışlıkla yapılan silmeler geri alınabilir.
+                </div>
+
+                <form asp-action="Delete" method="post">
+
+                    @* name="id" ŞART!
+                       Controller'daki DeleteConfirmed(long id) parametresi
+                       "id" adını bekliyor. asp-for tek başına "PersonelId"
+                       adında bir alan üretirdi ve eşleşmezdi. *@
+                    <input type="hidden" asp-for="PersonelId" name="id" />
+
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Evet, sil
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

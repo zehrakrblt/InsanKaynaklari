@@ -1,0 +1,120 @@
+@model ik.Models.Personel
+@{
+    ViewData["Title"] = "Yeni Personel";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+
+                    @* Alan bazlı OLMAYAN hatalar burada görünür *@
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Ad" class="form-label"></label>
+                            <input asp-for="Ad" class="form-control" autofocus />
+                            <span asp-validation-for="Ad" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Soyad" class="form-label"></label>
+                            <input asp-for="Soyad" class="form-control" />
+                            <span asp-validation-for="Soyad" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DepartmanId" class="form-label"></label>
+                            <select asp-for="DepartmanId" asp-items="ViewBag.Departmanlar"
+                                    class="form-select">
+                                @* Boş seçenek olmazsa ilk departman otomatik seçili görünür
+                                   ve kullanıcı farkında olmadan yanlış departman kaydeder *@
+                                <option value="">-- Departman seçin --</option>
+                            </select>
+                            <span asp-validation-for="DepartmanId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Pozisyon" class="form-label"></label>
+                            <input asp-for="Pozisyon" class="form-control"
+                                   placeholder="Örn: Yazılım Uzmanı" />
+                            <span asp-validation-for="Pozisyon" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Tc" class="form-label"></label>
+                            <input asp-for="Tc" class="form-control" maxlength="11" />
+                            <span asp-validation-for="Tc" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DogumTarihi" class="form-label"></label>
+                            <input asp-for="DogumTarihi" type="date" class="form-control" />
+                            <span asp-validation-for="DogumTarihi" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Cinsiyet" class="form-label"></label>
+                            <select asp-for="Cinsiyet" class="form-select">
+                                <option value="">-- Seçin --</option>
+                                <option value="Kadın">Kadın</option>
+                                <option value="Erkek">Erkek</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                            <span asp-validation-for="Cinsiyet" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Telefon" class="form-label"></label>
+                            <input asp-for="Telefon" class="form-control" placeholder="05XX XXX XX XX" />
+                            <span asp-validation-for="Telefon" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Eposta" class="form-label"></label>
+                            <input asp-for="Eposta" type="email" class="form-control" />
+                            <span asp-validation-for="Eposta" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="IseGirisTarihi" class="form-label"></label>
+                            <input asp-for="IseGirisTarihi" type="date" class="form-control" />
+                            <span asp-validation-for="IseGirisTarihi" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="YillikIzinHakki" class="form-label"></label>
+                            <input asp-for="YillikIzinHakki" type="number" class="form-control"
+                                   style="max-width: 150px;" value="14" />
+                            <span asp-validation-for="YillikIzinHakki" class="text-danger small"></span>
+                            <div class="form-text">Varsayılan 14 gün.</div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-lg"></i> Personeli kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* Bu satır olmazsa hata mesajları ancak sunucuya gidip dönünce görünür *@
+    <partial name="_ValidationScriptsPartial" />
+}

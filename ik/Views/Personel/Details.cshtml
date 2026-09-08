@@ -1,0 +1,108 @@
+@model ik.Models.Personel
+@{
+    ViewData["Title"] = "Personel detayı";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+
+            @* ───────── ÜST BAŞLIK ───────── *@
+            <div class="card-body border-bottom">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="mb-1">@Model.Ad @Model.Soyad</h5>
+                        <span class="badge bg-secondary">@Model.DepartmanAd</span>
+                        <span class="text-muted small ms-2">@Model.Pozisyon</span>
+                    </div>
+                </div>
+            </div>
+
+            @* ───────── KİŞİSEL BİLGİLER ───────── *@
+            <div class="card-body border-bottom">
+                <h6 class="text-muted mb-3">Kişisel Bilgiler</h6>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 fw-normal text-muted">TC Kimlik No</dt>
+                    <dd class="col-sm-8">@Model.Tc</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Doğum tarihi</dt>
+                    <dd class="col-sm-8">@Model.DogumTarihi.ToString("dd.MM.yyyy")</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Cinsiyet</dt>
+                    <dd class="col-sm-8">@Model.Cinsiyet</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Telefon</dt>
+                    <dd class="col-sm-8">@Model.Telefon</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">E-posta</dt>
+                    <dd class="col-sm-8">@Model.Eposta</dd>
+                </dl>
+            </div>
+
+            @* ───────── İSTİHDAM BİLGİLERİ ───────── *@
+            <div class="card-body border-bottom">
+                <h6 class="text-muted mb-3">İstihdam Bilgileri</h6>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 fw-normal text-muted">İşe giriş tarihi</dt>
+                    <dd class="col-sm-8">@Model.IseGirisTarihi.ToString("dd.MM.yyyy")</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Kıdem</dt>
+                    <dd class="col-sm-8">@Model.Kidem yıl</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Yıllık izin hakkı</dt>
+                    <dd class="col-sm-8">@Model.YillikIzinHakki gün</dd>
+
+                    @* ⭐ ÖDEVİN EN ÖNEMLİ KISMI — kalan izin hakkı *@
+                    <dt class="col-sm-4 fw-normal text-muted">Kalan izin hakkı</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.KalanIzinHakki > 0 ? "bg-success" : "bg-danger") fs-6">
+                            @Model.KalanIzinHakki gün
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+
+            @* ───────── TARİHLER ───────── *@
+            <div class="card-body">
+                <h6 class="text-muted mb-3">Kayıt Bilgileri</h6>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 fw-normal text-muted">Oluşturulma</dt>
+                    <dd class="col-sm-8">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Son güncelleme</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            @Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Henüz güncellenmemiş</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+
+            @* ───────── İŞLEMLER ───────── *@
+            <div class="card-footer bg-white">
+                <a asp-action="Edit" asp-route-id="@Model.PersonelId"
+                   class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil"></i> Düzenle
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.PersonelId"
+                   class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i> Sil
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Listeye dön
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>

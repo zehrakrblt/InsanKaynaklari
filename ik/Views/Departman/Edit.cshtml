@@ -1,0 +1,63 @@
+@model ik.Models.Departman
+@{
+    ViewData["Title"] = "Departmanı düzenle";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+
+                    @* ═══ GİZLİ ALANLAR ═══ *@
+
+                    @* Hangi kaydı güncelliyoruz? WHERE için şart. *@
+                    <input type="hidden" asp-for="DepartmanId" />
+
+                    @* Kayıt tarihi değişmemeli *@
+                    <input type="hidden" asp-for="CreatedDate" />
+
+                    @* Aktiflik durumu korunmalı *@
+                    <input type="hidden" asp-for="IsActive" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="DepartmanAd" class="form-label"></label>
+                        <input asp-for="DepartmanAd" class="form-control" />
+                        <span asp-validation-for="DepartmanAd" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Aciklama" class="form-label"></label>
+                        <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Aciklama" class="text-danger small"></span>
+                    </div>
+
+                    @* Kayıt geçmişi — bilgi amaçlı, düzenlenemez *@
+                    <div class="text-muted small mb-3">
+                        <i class="bi bi-clock-history"></i>
+                        Oluşturuldu: @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            <span> &nbsp;|&nbsp; Güncellendi: @Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                        }
+                    </div>
+
+                    <hr />
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-lg"></i> Değişiklikleri kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

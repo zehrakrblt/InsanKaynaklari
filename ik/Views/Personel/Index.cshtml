@@ -1,0 +1,91 @@
+@model List<ik.Models.Personel>
+@{
+    ViewData["Title"] = "Personel";
+}
+
+@if (TempData["Basarili"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Basarili"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">Personeller (@Model.Count)</span>
+        <a asp-action="Create" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-lg"></i> Yeni personel
+        </a>
+    </div>
+
+    <div class="card-body p-0">
+
+        @if (Model.Count == 0)
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-people fs-1 d-block mb-2"></i>
+                <p class="mb-3">Henüz personel yok.</p>
+                <a asp-action="Create" class="btn btn-sm btn-success">İlk personeli ekle</a>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>Departman</th>
+                        <th>Pozisyon</th>
+                        <th class="text-center">Kıdem</th>
+                        <th>Telefon</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@p.PersonelId"
+                                   class="text-decoration-none fw-semibold">
+                                    @p.Ad @p.Soyad
+                                </a>
+                                <div class="text-muted small">@p.Eposta</div>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-secondary">@p.DepartmanAd</span>
+                            </td>
+
+                            <td>@p.Pozisyon</td>
+
+                            <td class="text-center">
+                                @p.Kidem yıl
+                            </td>
+
+                            <td class="small">@p.Telefon</td>
+
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Details" asp-route-id="@p.PersonelId"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@p.PersonelId"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@p.PersonelId"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>

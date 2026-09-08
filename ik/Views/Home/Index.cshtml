@@ -1,8 +1,138 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model ik.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Panel";
+    int maxSayi = Model.DepartmanDagilimlari.Count > 0
+        ? Model.DepartmanDagilimlari.Max(d => d.PersonelSayisi)
+        : 1;
+    if (maxSayi == 0) maxSayi = 1;   // sıfıra bölme koruması
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@* ═══════════ ÜST KARTLAR ═══════════ *@
+<div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <a asp-controller="Personel" asp-action="Index" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small">Toplam personel</div>
+                        <div class="fs-3 fw-bold text-dark">@Model.ToplamPersonel</div>
+                    </div>
+                    <i class="bi bi-people fs-1 text-primary opacity-25"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        @* Bekleyen izinler listesine link *@
+        <a asp-controller="Izin" asp-action="Index" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 @(Model.BekleyenIzinSayisi > 0 ? "border-warning border-2" : "")">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small">Bekleyen izin talebi</div>
+                        <div class="fs-3 fw-bold @(Model.BekleyenIzinSayisi > 0 ? "text-warning" : "text-dark")">
+                            @Model.BekleyenIzinSayisi
+                        </div>
+                    </div>
+                    <i class="bi bi-hourglass-split fs-1 text-warning opacity-25"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Izin" asp-action="Index" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small">Bu ay izinde olan</div>
+                        <div class="fs-3 fw-bold text-dark">@Model.BuAyIzindeOlanPersonel</div>
+                    </div>
+                    <i class="bi bi-calendar-check fs-1 text-info opacity-25"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+
+<div class="row g-3">
+
+    @* ═══════════ DEPARTMANLARA GÖRE DAĞILIM (ÇUBUK GRAFİK) ═══════════ *@
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">Departmanlara göre personel dağılımı</div>
+            <div class="card-body">
+
+                @if (Model.DepartmanDagilimlari.Count == 0)
+                {
+                    <p class="text-muted small mb-0">Henüz departman yok.</p>
+                }
+                else
+                {
+                    
+                    @foreach (var d in Model.DepartmanDagilimlari)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span class="fw-semibold">@d.DepartmanAd</span>
+                                <span class="text-muted">@d.PersonelSayisi personel</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-primary"
+                                     style="width: @((d.PersonelSayisi * 100) / maxSayi)%;"></div>
+                            </div>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+
+    @* ═══════════ SON 5 BEKLEYEN İZİN TALEBİ ═══════════ *@
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">Son bekleyen izin talepleri</div>
+            <div class="card-body p-0">
+
+                @if (Model.SonBekleyenIzinler.Count == 0)
+                {
+                    <p class="text-muted small p-3 mb-0">
+                        Bekleyen izin talebi yok.
+                    </p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var i in Model.SonBekleyenIzinler)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a asp-controller="Izin" asp-action="Edit"
+                                       asp-route-id="@i.IzinId"
+                                       class="text-decoration-none small fw-semibold">
+                                        @i.PersonelAdi
+                                    </a>
+                                    <div>
+                                        <span class="badge bg-secondary"
+                                              style="font-size: .65rem;">@i.DepartmanAd</span>
+                                        <span class="text-muted small">@i.IzinTipi</span>
+                                    </div>
+                                </div>
+
+                                <span class="small text-muted">
+                                    @i.BaslangicTarihi.ToString("dd.MM") - @i.BitisTarihi.ToString("dd.MM")
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+
+            </div>
+        </div>
+    </div>
+
 </div>

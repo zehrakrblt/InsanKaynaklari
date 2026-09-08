@@ -1,0 +1,60 @@
+@model ik.Models.Departman
+@{
+    ViewData["Title"] = "Departman Detayı";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body border-bottom">
+                <h5 class="mb-1">@Model.DepartmanAd</h5>
+                <span class="badge bg-secondary">@Model.PersonelSayisi personel</span>
+            </div>
+
+            @* ───────── AÇIKLAMA ───────── *@
+            <div class="card-body border-bottom">
+                <h6 class="text-muted mb-2">Açıklama</h6>
+
+                @if (string.IsNullOrWhiteSpace(Model.Aciklama))
+                {
+                    <p class="text-muted fst-italic mb-0">Açıklama girilmemiş.</p>
+                }
+                else
+                {
+                    <p class="mb-0" style="white-space: pre-wrap;">@Model.Aciklama</p>
+                }
+            </div>
+
+            @* ───────── TARİHLER ───────── *@
+            <div class="card-body border-bottom">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 fw-normal text-muted">Oluşturulma</dt>
+                    <dd class="col-sm-8">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4 fw-normal text-muted">Son güncelleme</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            @Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Henüz güncellenmemiş</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+
+            @* ───────── İŞLEMLER ───────── *@
+            <div class="card-footer bg-white">
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Listeye dön
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>

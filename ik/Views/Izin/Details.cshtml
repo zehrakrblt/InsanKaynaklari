@@ -1,0 +1,69 @@
+@model ik.Models.Izin
+@{
+    ViewData["Title"] = "Izin Detayı";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">İzin Detayı</span>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Listeye dön
+                </a>
+            </div>
+
+            <dl class="row mb-0">
+
+                <div class="card-body border-bottom">
+                    <h6 class="text-muted mb-3">Kişisel Bilgiler</h6>
+
+                    <dt class="col-sm-4">Ad Soyad</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.PersonelAdi</dd>
+
+                    <dt class="col-sm-4">Departman</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-secondary">@Model.DepartmanAd</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Tarih Aralığı</dt>
+                    <dd class="col-sm-8">
+                        @Model.BaslangicTarihi.ToString("dd.MM.yyyy") -
+                        @Model.BitisTarihi.ToString("dd.MM.yyyy")
+                    </dd>
+
+
+                    <dt class="col-sm-4">Gün Sayısı</dt>
+                    <dd class="col-sm-8">
+                        @Model.GunSayisi
+                    </dd>
+
+                
+
+                    <dt class="col-sm-4">Izin Tipi</dt>
+                    <dd class="col-sm-8">@Model.IzinTipi</dd>
+                </dl>
+            </div>
+
+                   
+            @* ───────── İŞLEMLER ───────── *@
+            <div class="card-footer bg-white">
+
+                <a asp-action="Edit" asp-route-id="@Model.IzinId" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil"></i> Düzenle
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.IzinId" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i> Sil
+                </a>
+
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Listeye dön
+            </a>
+        </div>
+
+    </div>
+
+</div>
+</div>
