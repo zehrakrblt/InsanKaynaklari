@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;   // SelectList için
 using ik.Data;
 using ik.Models;
+using Microsoft.Data.SqlClient;
 
 namespace ik.Controllers;
 
@@ -17,7 +18,7 @@ public class PersonelController : Controller
         _departmanRepo = departmanRepo;
     }
 
-  
+
     private void DepartmanListesiniHazirla(long? secili = null)
     {
         var departmanlar = _departmanRepo.TumunuGetir();
@@ -49,25 +50,34 @@ public class PersonelController : Controller
     //  3) YENİ KAYDI KAYDET
     //  POST: /Gorev/Create
     // ════════════════════════════════════════════════════════
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Create(Personel personel)
-    {
    
-        if (!ModelState.IsValid)
-        {
-       
-            DepartmanListesiniHazirla(personel.DepartmanId);
-            return View(personel);   // kullanıcının yazdıkları kaybolmasın
-        }
+[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Create(Personel personel)
+{
 
+    if (!ModelState.IsValid)
+    {
+
+        DepartmanListesiniHazirla(personel.DepartmanId);
+        return View(personel);   // kullanıcının yazdıkları kaybolmasın
+    }
+
+    try
+    {
         _personelRepo.Ekle(personel);
         TempData["Basarili"] = $"\"{personel.Ad} {personel.Soyad}\" personeli eklendi.";
 
         // POST-Redirect-GET: yönlendirme yapmazsak F5'te çift kayıt olur
         return RedirectToAction("Index");
     }
-
+    catch (SqlException ex)
+    {
+        BenzersizlikHatasiniIsle(ex);
+        DepartmanListesiniHazirla(personel.DepartmanId);
+        return View(personel);
+    }
+}
     // ════════════════════════════════════════════════════════
     //  4) DÜZENLEME FORMU
     //  GET: /Gorev/Edit/5
@@ -76,7 +86,7 @@ public class PersonelController : Controller
     {
         Personel? personel = _personelRepo.IdIleGetir(id);
 
-    
+
         if (personel == null)
             return NotFound();
 
@@ -97,11 +107,60 @@ public class PersonelController : Controller
             DepartmanListesiniHazirla(personel.DepartmanId);
             return View(personel);
         }
-
-        _personelRepo.Guncelle(personel);
+        try
+        {
+               _personelRepo.Guncelle(personel);
         TempData["Basarili"] = "Personel güncellendi.";
         return RedirectToAction("Index");
+        }
+
+        catch(SqlException ex)
+        {
+            //Not ögtenci kendi e postasini degistirmeden kaydederse hata almaz.
+           BenzersizlikHatasiniIsle(ex);
+           DepartmanListesiniHazirla(personel.DepartmanId);
+           return View(personel);
+        }
+
+
     }
+
+
+    //  YARDIMCI sqlexceptioni kullanici dostu mesaja cevirmek icin
+
+    private void BenzersizlikHatasiniIsle(SqlException ex)
+    {
+         if (ex.Number == 2627 || ex.Number == 2601)
+        {
+            if (ex.Message.Contains("eposta"))
+            {
+                ModelState.AddModelError("Eposta",
+                    "Bu e-posta adresi başka bir Personele kayıtlı.");
+            }
+            else if (ex.Message.Contains("telefon"))
+            {
+                ModelState.AddModelError("Telefon",
+                    "Bu telefon numarası başka bir Personele kayıtlı.");
+            }
+            else if (ex.Message.Contains("tc"))
+            {
+                ModelState.AddModelError("Tc",
+                    "Bu TC kimlik numarası başka bir Personele kayıtlı.");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Bu kayıt zaten mevcut.");
+            }
+        }
+        else
+        {
+            // Beklenmedik veritabanı hatası — detay verme
+            ModelState.AddModelError("",
+                "Kayıt sırasında bir sorun oluştu. Lütfen tekrar deneyin.");
+        }
+    }
+
+    
 
     // ════════════════════════════════════════════════════════
     //  6) SİLME ONAY SAYFASI

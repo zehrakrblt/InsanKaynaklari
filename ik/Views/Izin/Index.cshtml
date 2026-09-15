@@ -3,6 +3,52 @@
     ViewData["Title"] = "İzinler";
 }
 
+<form method="get" asp-action="Index" class="row g-2 align-items-end">
+
+    <div class="col-md-4">
+        <label class="form-label small text-muted">Ara</label>
+        <input type="text" name="arama" value="@ViewBag.Arama"
+               class="form-control form-control-sm"
+               placeholder="Personel adı veya açıklama" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label small text-muted">Durum</label>
+        <select name="durum" class="form-select form-select-sm">
+            <option value="">Tümü</option>
+            <option value="Beklemede"
+                    selected="@(ViewBag.SeciliDurum as string == "Beklemede")">
+                Beklemede
+            </option>
+            <option value="Onaylandi"
+                    selected="@(ViewBag.SeciliDurum as string == "Onaylandi")">
+                Onaylandı
+            </option>
+            <option value="Reddedildi"
+                    selected="@(ViewBag.SeciliDurum as string == "Reddedildi")">
+                Reddedildi
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-check mb-2">
+            <input type="checkbox" name="sadeceReddedilenler" value="true"
+                   class="form-check-input" id="reddeilmisKutu"
+                   checked="@(ViewBag.SadeceReddedilenler as bool? == true)" />
+            <label class="form-check-label small" for="reddeilmisKutu">
+                Sadece reddedilenler    
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm">
+            <i class="bi bi-search"></i> Filtrele
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Temizle</a>
+    </div>
+
+</form>
+
 @if (TempData["Basarili"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show">
@@ -23,7 +69,7 @@
     <div class="card-header bg-white d-flex justify-content-between align-items-center">
         <span class="fw-semibold">İzinler (@Model.Count)</span>
         <a asp-action="Create" class="btn btn-success btn-sm">
-            <i class="bi bi-plus-lg"></i> Yeni izin
+            <i class="bi bi-plus-lg"></i> Yeni Izin
         </a>
     </div>
 
@@ -79,6 +125,7 @@
                                 @* ⭐ Listeden tek tıkla onayla/reddet — sadece Beklemede iken göster *@
                                 @if (i.Durum == "Beklemede")
                                 {
+                                    
                                     <form asp-action="Onayla" asp-route-id="@i.IzinId" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-sm btn-outline-success" title="Onayla">
                                             <i class="bi bi-check-lg"></i>
@@ -91,17 +138,14 @@
                                     </form>
                                 }
 
-                                  <a asp-action="Details" asp-route-id="@i.IzinId"
-                                   class="btn btn-sm btn-outline-info">
+                                <a asp-action="Details" asp-route-id="@i.IzinId" class="btn btn-sm btn-outline-info">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
 
-                                <a asp-action="Edit" asp-route-id="@i.IzinId"
-                                   class="btn btn-sm btn-outline-primary">
+                                <a asp-action="Edit" asp-route-id="@i.IzinId" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@i.IzinId"
-                                   class="btn btn-sm btn-outline-danger">
+                                <a asp-action="Delete" asp-route-id="@i.IzinId" class="btn btn-sm btn-outline-danger">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>

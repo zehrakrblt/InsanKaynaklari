@@ -29,8 +29,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label asp-for="DepartmanId" class="form-label"></label>
-                            <select asp-for="DepartmanId" asp-items="ViewBag.Departmanlar"
-                                    class="form-select">
+                            <select asp-for="DepartmanId" asp-items="ViewBag.Departmanlar" class="form-select">
                                 @* Boş seçenek olmazsa ilk departman otomatik seçili görünür
                                    ve kullanıcı farkında olmadan yanlış departman kaydeder *@
                                 <option value="">-- Departman seçin --</option>
@@ -40,8 +39,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label asp-for="Pozisyon" class="form-label"></label>
-                            <input asp-for="Pozisyon" class="form-control"
-                                   placeholder="Örn: Yazılım Uzmanı" />
+                            <input asp-for="Pozisyon" class="form-control" placeholder="Örn: Yazılım Uzmanı" />
                             <span asp-validation-for="Pozisyon" class="text-danger small"></span>
                         </div>
                     </div>

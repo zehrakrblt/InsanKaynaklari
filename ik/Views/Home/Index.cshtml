@@ -4,7 +4,7 @@
     int maxSayi = Model.DepartmanDagilimlari.Count > 0
         ? Model.DepartmanDagilimlari.Max(d => d.PersonelSayisi)
         : 1;
-    if (maxSayi == 0) maxSayi = 1;   // sıfıra bölme koruması
+    if (maxSayi == 0) maxSayi = 1; // sıfıra bölme koruması
 }
 
 @* ═══════════ ÜST KARTLAR ═══════════ *@
@@ -72,17 +72,17 @@
                 }
                 else
                 {
-                    
+
                     @foreach (var d in Model.DepartmanDagilimlari)
                     {
                         <div class="mb-3">
                             <div class="d-flex justify-content-between small mb-1">
                                 <span class="fw-semibold">@d.DepartmanAd</span>
-                                <span class="text-muted">@d.PersonelSayisi personel</span>
+                                <span class="text-muted">@d.PersonelSayisi Personel</span>
                             </div>
                             <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-primary"
-                                     style="width: @((d.PersonelSayisi * 100) / maxSayi)%;"></div>
+                                <div class="progress-bar bg-primary" style="width: @((d.PersonelSayisi * 100) / maxSayi)%;">
+                                </div>
                             </div>
                         </div>
                     }
@@ -111,14 +111,12 @@
                         {
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <a asp-controller="Izin" asp-action="Edit"
-                                       asp-route-id="@i.IzinId"
+                                    <a asp-controller="Izin" asp-action="Edit" asp-route-id="@i.IzinId"
                                        class="text-decoration-none small fw-semibold">
                                         @i.PersonelAdi
                                     </a>
                                     <div>
-                                        <span class="badge bg-secondary"
-                                              style="font-size: .65rem;">@i.DepartmanAd</span>
+                                        <span class="badge bg-secondary" style="font-size: .65rem;">@i.DepartmanAd</span>
                                         <span class="text-muted small">@i.IzinTipi</span>
                                     </div>
                                 </div>

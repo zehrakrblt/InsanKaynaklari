@@ -16,7 +16,7 @@
     <div class="card-header bg-white d-flex justify-content-between align-items-center">
         <span class="fw-semibold">Personeller (@Model.Count)</span>
         <a asp-action="Create" class="btn btn-success btn-sm">
-            <i class="bi bi-plus-lg"></i> Yeni personel
+            <i class="bi bi-plus-lg"></i> Yeni Personel
         </a>
     </div>
 
@@ -40,17 +40,21 @@
                         <th>Pozisyon</th>
                         <th class="text-center">Kıdem</th>
                         <th>Telefon</th>
+                        <th>Tc Kimlik No</th>
                         <th class="text-end">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
+                 
                     @foreach (var p in Model)
                     {
+                         @*tc maskeli*@
+                    string TcMaskeli = p.Tc.Length >= 11 ? p.Tc.Substring(0, 3) + "*****" : "***********";
+
                         <tr>
                             <td>
-                                <a asp-action="Details" asp-route-id="@p.PersonelId"
-                                   class="text-decoration-none fw-semibold">
-                                    @p.Ad @p.Soyad
+                                <a asp-action="Details" asp-route-id="@p.PersonelId" class="text-decoration-none fw-semibold">
+                                    @p.Ad @p.Soyad 
                                 </a>
                                 <div class="text-muted small">@p.Eposta</div>
                             </td>
@@ -66,18 +70,17 @@
                             </td>
 
                             <td class="small">@p.Telefon</td>
+                         
+                            <td class="small">@TcMaskeli</td>
 
                             <td class="text-end text-nowrap">
-                                <a asp-action="Details" asp-route-id="@p.PersonelId"
-                                   class="btn btn-sm btn-outline-secondary">
+                                <a asp-action="Details" asp-route-id="@p.PersonelId" class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@p.PersonelId"
-                                   class="btn btn-sm btn-outline-primary">
+                                <a asp-action="Edit" asp-route-id="@p.PersonelId" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@p.PersonelId"
-                                   class="btn btn-sm btn-outline-danger">
+                                <a asp-action="Delete" asp-route-id="@p.PersonelId" class="btn btn-sm btn-outline-danger">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>

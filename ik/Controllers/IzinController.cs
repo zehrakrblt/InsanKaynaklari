@@ -10,12 +10,12 @@ namespace ik.Controllers;
 // zaten tüm controller'ları koruyor.
 public class IzinController : Controller
 {
-    private readonly IzinRepository izin_repo;
+    private readonly IzinRepository _izinrepo;
     private readonly PersonelRepository _personelRepo;
 
     public IzinController(IzinRepository repo, PersonelRepository personelRepo)
     {
-        izin_repo = repo;
+        _izinrepo = repo;
         _personelRepo = personelRepo;
     }
 
@@ -28,11 +28,7 @@ public class IzinController : Controller
         ViewBag.Personeller = new SelectList(liste, "PersonelId", "AdSoyad", secili);
     }
 
-    // GET: /Izin/listeleme
-    public IActionResult Index()
-    {
-        return View(izin_repo.TumunuGetir());
-    }
+
 
     // GET: /Izin/Create yeni kayit formu
     public IActionResult Create()
@@ -61,7 +57,7 @@ public class IzinController : Controller
         // Gün sayısı: basit takvim günü hesabı
         izin.GunSayisi = (izin.BitisTarihi - izin.BaslangicTarihi).Days + 1;
 
-        izin_repo.Ekle(izin);
+        _izinrepo.Ekle(izin);
         TempData["Basarili"] = "İzin talebi eklendi.";
 
         // POST-Redirect-GET: F5'te çift kayıt olmasın
@@ -71,7 +67,7 @@ public class IzinController : Controller
     // GET: /Izin/Edit/5
     public IActionResult Edit(long id)
     {
-        var izin = izin_repo.IdIleGetir(id);
+        var izin = _izinrepo.IdIleGetir(id);
         if (izin == null) return NotFound();
 
         PersonelListesiniHazirla(izin.PersonelId);
@@ -96,7 +92,7 @@ public class IzinController : Controller
 
         izin.GunSayisi = (izin.BitisTarihi - izin.BaslangicTarihi).Days + 1;
 
-        izin_repo.Guncelle(izin);
+        _izinrepo.Guncelle(izin);
         TempData["Basarili"] = "İzin güncellendi.";
         return RedirectToAction("Index");
     }
@@ -108,7 +104,7 @@ public class IzinController : Controller
     // ════════════════════════════════════════════════════════
     public IActionResult Details(long id)
     {
-        Izin? izin = izin_repo.IdIleGetir(id);
+        Izin? izin = _izinrepo.IdIleGetir(id);
 
         if (izin == null)
             return NotFound();
@@ -117,10 +113,13 @@ public class IzinController : Controller
     }
 
     // GET: /Izin/Delete/5/silme onay sayfasi
-    public IActionResult Delete(long id)
+     public IActionResult Delete(long id)
     {
-        var izin = izin_repo.IdIleGetir(id);
-        if (izin == null) return NotFound();
+        Izin? izin = _izinrepo.IdIleGetir(id);
+
+        if (izin == null)
+            return NotFound();
+
         return View(izin);
     }
 
@@ -129,7 +128,7 @@ public class IzinController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(long id)
     {
-        izin_repo.PasifYap(id);
+        _izinrepo.PasifYap(id);
         TempData["Basarili"] = "İzin silindi.";
         return RedirectToAction("Index");
     }
@@ -139,8 +138,8 @@ public class IzinController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Onayla(long id)
     {
-        izin_repo.DurumGuncelle(id, "Onaylandı");
-        TempData["Basarili"] = "İzin onaylandı.";
+        _izinrepo.DurumGuncelle(id, "Onaylandi");
+        TempData["Basarili"] = "İzin onaylandi.";
         return RedirectToAction("Index");
     }
 
@@ -149,8 +148,25 @@ public class IzinController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Reddet(long id)
     {
-        izin_repo.DurumGuncelle(id, "Reddedildi");
+        _izinrepo.DurumGuncelle(id, "Reddedildi");
         TempData["Basarili"] = "İzin reddedildi.";
         return RedirectToAction("Index");
     }
+
+    // GET: /Izin?arama=rapor&personelId=2&durum=Beklemede
+public IActionResult Index(string? arama, long? personelId, string? durum,
+                           bool sadeceReddedilenler = false)
+{
+    var liste = _izinrepo.Filtrele(arama, personelId, durum, sadeceReddedilenler);
+
+    // ⭐ Filtre değerlerini View'a geri gönder — form dolu kalsın
+    ViewBag.Arama          = arama;
+    ViewBag.SeciliPersonel = personelId;
+    ViewBag.SeciliDurum    = durum;
+    ViewBag.SadeceReddedilenler = sadeceReddedilenler;
+
+    PersonelListesiniHazirla(personelId);
+
+    return View(liste);
+}
 }

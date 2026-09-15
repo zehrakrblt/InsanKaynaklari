@@ -13,8 +13,7 @@
 
                     <div class="mb-3">
                         <label asp-for="PersonelId" class="form-label"></label>
-                        <select asp-for="PersonelId" asp-items="ViewBag.Personeller"
-                                class="form-select">
+                        <select asp-for="PersonelId" asp-items="ViewBag.Personeller" class="form-select">
                             <option value="">-- Personel seçin --</option>
                         </select>
                         <span asp-validation-for="PersonelId" class="text-danger small"></span>
@@ -23,9 +22,9 @@
                     <div class="mb-3">
                         <label asp-for="IzinTipi" class="form-label"></label>
                         <select asp-for="IzinTipi" class="form-select">
-                            <option value="Yıllık">Yıllık</option>
+                            <option value="Yillik">Yıllık</option>
                             <option value="Mazeret">Mazeret</option>
-                            <option value="Hastalık">Hastalık</option>
+                            <option value="Hastalik">Hastalık</option>
                             <option value="Ücretsiz">Ücretsiz</option>
                         </select>
                         <span asp-validation-for="IzinTipi" class="text-danger small"></span>

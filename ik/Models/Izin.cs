@@ -12,7 +12,7 @@ public class Izin
 
     [Required(ErrorMessage = "İzin tipi seçmelisiniz.")]
     [Display(Name = "İzin tipi")]
-    public string IzinTipi { get; set; } = "Yıllık";   // Yıllık / Mazeret / Hastalık / Ücretsiz
+    public string IzinTipi { get; set; } = "Yillik";   // Yıllık / Mazeret / Hastalık / Ücretsiz
 
     [Required(ErrorMessage = "Başlangıç tarihi zorunludur.")]
     [DataType(DataType.Date)]
@@ -60,7 +60,7 @@ public class Izin
     public string DurumRenk => Durum switch
     {
         "Beklemede" => "warning",
-        "Onaylandı" => "success",
+        "Onaylandi" => "success",
         "Reddedildi" => "danger",
         _ => "secondary"
     };

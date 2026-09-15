@@ -188,7 +188,7 @@ public class IzinRepository
         }
     }
 
-   
+
 
     // ════════════════════════════════════════════════════════
     //  5) DELETE — soft delete
@@ -253,7 +253,7 @@ public class IzinRepository
     {
         string sql = @"SELECT COUNT(DISTINCT personel_id)
                        FROM izin
-                       WHERE durum = N'Onaylandı'
+                       WHERE durum = N'Onaylandi'
                          AND is_active = 1
                          AND MONTH(baslangic_tarihi) = @ay
                          AND YEAR(baslangic_tarihi) = @yil";
@@ -303,7 +303,80 @@ public class IzinRepository
             }
         }
 
+        // ⭐ EKLENDİ: bu satır eksikti, "not all code paths return a value" hatasının sebebi buydu.
+        return liste;
+    }
 
+
+    /// <summary>
+    /// İzinleri filtreleyerek getirir. Tüm parametreler isteğe bağlıdır.
+    /// </summary>
+    /// <param name="arama">Personel adında veya açıklamada aranacak metin</param>
+    /// <param name="personelId">Belirli personel (null = hepsi)</param>
+    /// <param name="durum">Belirli durum (null = hepsi)</param>
+    /// <param name="sadeceReddedilenler">true ise yalnızca reddedilen izinler</param>
+    public List<Izin> Filtrele(string? arama, long? personelId, string? durum, bool sadeceReddedilenler = false)
+    {
+        var liste = new List<Izin>();
+
+        // ── Koşulları parça parça kur ────────────────────────────
+        // ⚠️ SQL METNİNİ parçalıyoruz — bu güvenli.
+        //    DEĞERLERİ hep parametre olarak veriyoruz — bu şart.
+        string kosullar = " WHERE iz.is_active = 1 ";
+
+        if (!string.IsNullOrWhiteSpace(arama))
+            kosullar += " AND (p.ad LIKE @arama OR p.soyad LIKE @arama OR iz.aciklama LIKE @arama) ";
+
+        if (personelId.HasValue && personelId.Value > 0)
+            kosullar += " AND iz.personel_id = @personelId ";
+
+        if (!string.IsNullOrWhiteSpace(durum))
+            kosullar += " AND iz.durum = @durum ";
+
+        if (sadeceReddedilenler)
+        {
+            // Reddedilenler = durum = 'Reddedildi'
+            kosullar += " AND iz.durum = N'Reddedildi' ";
+        }
+
+        string sql = @"SELECT iz.izin_id, iz.personel_id, p.ad + ' ' + p.soyad AS personel_adi,
+                              d.departman_ad, iz.izin_tipi, iz.baslangic_tarihi, iz.bitis_tarihi,
+                              iz.gun_sayisi, iz.aciklama, iz.durum, iz.created_date,
+                              iz.updated_date, iz.is_active
+                       FROM izin iz
+                       INNER JOIN personel p ON p.personel_id = iz.personel_id
+                       INNER JOIN departman d ON d.departman_id = p.departman_id"
+                     + kosullar +
+                     @" ORDER BY iz.baslangic_tarihi DESC";
+
+        using (SqlConnection baglanti = new SqlConnection(_baglantiMetni))
+        using (SqlCommand komut = new SqlCommand(sql, baglanti))
+        {
+            // ⚠️ Parametreyi eklerken koşulun EKLENDİĞİ durumla
+            //    aynı if'i kullan. Biri varsa diğeri de olmalı,
+            //    yoksa "Must declare the scalar variable" hatası alırsın.
+            if (!string.IsNullOrWhiteSpace(arama))
+                komut.Parameters.AddWithValue("@arama", "%" + arama.Trim() + "%");
+
+            if (personelId.HasValue && personelId.Value > 0)
+                komut.Parameters.AddWithValue("@personelId", personelId.Value);
+
+            if (!string.IsNullOrWhiteSpace(durum))
+                komut.Parameters.AddWithValue("@durum", durum);
+
+            baglanti.Open();
+
+            using (SqlDataReader okuyucu = komut.ExecuteReader())
+            {
+                while (okuyucu.Read())
+                {
+                    Izin i = SatiriNesneyeCevir(okuyucu);
+                    i.PersonelAdi = okuyucu.GetString(okuyucu.GetOrdinal("personel_adi"));
+                    i.DepartmanAd = okuyucu.GetString(okuyucu.GetOrdinal("departman_ad"));
+                    liste.Add(i);
+                }
+            }
+        }
 
         return liste;
     }
