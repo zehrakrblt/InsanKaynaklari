@@ -40,7 +40,7 @@ public class DashboardRepository
 
             string sql3 = @"SELECT COUNT(DISTINCT personel_id)
                             FROM izin
-                            WHERE durum = N'Onaylandı'
+                            WHERE durum = N'Onaylandi'
                               AND is_active = 1
                               AND MONTH(baslangic_tarihi) = @ay
                               AND YEAR(baslangic_tarihi) = @yil";

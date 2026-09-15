@@ -254,15 +254,15 @@ public class PersonelRepository
 
     // ════════════════════════════════════════════════════════
     //  Kalan izin hakkı = yıllık izin hakkı − (bu yıl ONAYLANMIŞ YILLIK izinlerin gün toplamı)
-    //  Sadece izin_tipi = 'Yıllık', durum = 'Onaylandı', is_active = 1, içinde bulunulan yıl.
+    //  Sadece izin_tipi = 'YYillik', durum = 'Onaylandı', is_active = 1, içinde bulunulan yıl.
     // ════════════════════════════════════════════════════════
     public int KalanIzinHakkiHesapla(long personelId, int yillikIzinHakki)
     {
         string sql = @"SELECT ISNULL(SUM(gun_sayisi), 0)
                        FROM izin
                        WHERE personel_id = @personelId
-                         AND izin_tipi = N'Yıllık'
-                         AND durum = N'Onaylandı'
+                         AND izin_tipi = N'Yillik'
+                         AND durum = N'Onaylandi'
                          AND is_active = 1
                          AND YEAR(baslangic_tarihi) = @yil";
 

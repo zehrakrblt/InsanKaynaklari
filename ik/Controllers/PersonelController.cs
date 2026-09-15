@@ -203,6 +203,8 @@ public IActionResult Create(Personel personel)
         if (personel == null)
             return NotFound();
 
+            personel.KalanIzinHakki = _personelRepo.KalanIzinHakkiHesapla(personel.PersonelId, personel.YillikIzinHakki);
+
         return View(personel);
     }
 }
